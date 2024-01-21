@@ -4,5 +4,5 @@ UART operates on two wires, one for transmitting (TX) and one for receiving (RX)
 between microcontrollers, sensors, and various peripherals. The absence of a shared clock signal distinguishes UART from synchronous communication protocols.
 
 
-TO RUN IT IN VERILOG, Copy and paste codes in verilog files and save them with names of your choice in the same directory and run it on terminal with the usual irun command.
+TO RUN IT IN VERILOG, Copy and paste codes in verilog files and save them with names of your choice in the same directory and run it on terminal with the usual irun command(make sure you have mentor graphics or vivado or any other verilog tool).
 I have attached my outputs in the pdf. Do refer to it to know more!
