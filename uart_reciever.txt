@@ -1,0 +1,76 @@
+module uart_receiver (
+  input wire clk,       // Clock signal (50MHz)
+  input wire rst_n,     // Active-low reset
+  input wire rs232,     // UART RX signal
+  output wire [7:0] rx_data, // 8-bit register to store received data
+  output wire done      // End of data reception signal
+);
+ 	
+  reg rs232_t;    // First stage of data synchronization
+  reg rs232_t1;   // Second stage of data synchronization
+  reg rs232_t2;   // Third stage of data synchronization
+  reg done;            // Reception done signal
+  reg [3:0]counter;
+reg[1:0] state;
+  local param idle=2'b00;
+  local param recieve=2'b10;
+  local param end_recieve=2'b11;
+
+  always @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+      state<=idle;
+      rs232_t <= 1'b0;
+      rs232_t1 <= 1'b0;
+      rs232_t2 <= 1'b0;
+      done <= 1'b0;
+      counter<=0;
+      rx_data <= 8'b0;
+    end 
+    else begin
+      rs232_t <= rs232;
+      rs232_t1 <= rs232_t;
+      rs232_t2 <= rs232_t1;
+
+  end
+always @ (posedge clk)
+ begin 
+case(state)
+idle: 
+begin 
+ state<=idle;
+ if(rs232_t2==1'b0)
+	begin
+	state<=recieve;
+	rx_data<=8'b0;
+	counter<=4'b0;
+
+	end
+end
+recieve:
+begin
+if(rs232_t2==1'b1 && counter>4'b 1000)
+begin
+counter<=4,b0;
+state<=end_recieve
+end
+else
+begin
+rx_data<={rx_data[6:0],rs232_t2};
+counter<=counter+1;
+end
+end
+
+end_recieve:
+begin 
+rx_data<= 8'b0;
+done<=1;
+state<=idle;
+end
+
+default:
+state<=idle;
+endcase	
+end
+end
+endmodule
+
